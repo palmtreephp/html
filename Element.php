@@ -52,8 +52,12 @@ class Element
         }
     }
 
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes, $clear = false)
     {
+        if ($clear) {
+            $this->attributes = [];
+        }
+
         foreach ($attributes as $key => $value) {
             $this->addAttribute($key, $value);
         }

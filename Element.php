@@ -84,7 +84,14 @@ class Element
 
     public function getAttributes()
     {
-        return ['class' => implode(' ', $this->classes)] + $this->attributes;
+        $attributes = $this->attributes;
+        $classes    = $this->getClasses();
+
+        if ($classes) {
+            $attributes['class'] = implode(' ', $classes);
+        }
+
+        return $attributes;
     }
 
     public function getAttribute($key)

@@ -113,6 +113,11 @@ class Element
         return trim($result);
     }
 
+    public function hasClass($class)
+    {
+        return in_array($class, $this->getClasses());
+    }
+
     public function getClasses()
     {
         return $this->classes;

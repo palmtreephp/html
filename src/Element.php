@@ -10,7 +10,7 @@ class Element
     protected $innerText = '';
     protected $innerHtml;
     /** @var Element[] */
-    protected $childElements = [];
+    protected $children = [];
     protected $attributes = [];
     protected $classes = [];
 
@@ -77,7 +77,7 @@ class Element
 
     public function addDataAttribute($key, $value = '')
     {
-        $this->attributes['data-' . $key] = $value;
+        $this->addAttribute("data-$key", $value);
 
         return $this;
     }
@@ -96,7 +96,7 @@ class Element
 
     public function getAttribute($key)
     {
-        return (isset($this->attributes[$key])) ? $this->attributes[$key] : null;
+        return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
     }
 
     public function removeAttribute($key)
@@ -194,7 +194,7 @@ class Element
 
     public function addChild(Element $element)
     {
-        $this->childElements[] = $element;
+        $this->children[] = $element;
 
         return $this;
     }
@@ -203,7 +203,7 @@ class Element
     {
         if ($this->innerHtml === null) {
             $this->innerHtml = '';
-            foreach ($this->childElements as $element) {
+            foreach ($this->children as $element) {
                 $this->innerHtml .= "\n" . $element->render($indent + 1);
             }
         }

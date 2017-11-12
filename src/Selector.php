@@ -8,7 +8,7 @@ class Selector
     protected $id;
     protected $classes = [];
 
-    public static $pattern = '/(?<tags>[a-zA-Z]+)*(?<ids>#[^#\.]+)*(?<classes>(?:\.[^.#]+)*)/';
+    const PATTERN = '/(?<tags>[a-zA-Z]+)*(?<ids>#[^#\.]+)*(?<classes>(?:\.[^.#]+)*)/';
 
     public function __construct($selector = null)
     {
@@ -26,7 +26,7 @@ class Selector
         }
 
         $matches = [];
-        preg_match_all(self::$pattern, $selector, $matches);
+        preg_match_all(static::PATTERN, $selector, $matches);
 
         if (isset($matches['tags'])) {
             $tags = array_filter($matches['tags']);

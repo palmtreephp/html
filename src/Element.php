@@ -6,13 +6,18 @@ use Palmtree\ArgParser\ArgParser;
 
 class Element
 {
-    protected $tag;
-    protected $innerText = '';
-    protected $innerHtml;
+    /** @var string */
+    private $tag;
+    /** @var string */
+    private $innerText = '';
+    /** @var string */
+    private $innerHtml;
     /** @var Element[] */
-    protected $children   = [];
-    protected $attributes = [];
-    protected $classes    = [];
+    private $children = [];
+    /** @var array */
+    private $attributes = [];
+    /** @var array */
+    private $classes = [];
 
     public static $voidElements = [
         'area',
@@ -36,6 +41,11 @@ class Element
         'textarea',
     ];
 
+    /**
+     * Element constructor.
+     *
+     * @param array|string $args
+     */
     public function __construct($args = [])
     {
         if (\is_array($args)) {
@@ -52,6 +62,12 @@ class Element
         }
     }
 
+    /**
+     * @param array $attributes
+     * @param bool  $clear
+     *
+     * @return self
+     */
     public function setAttributes(array $attributes, $clear = false)
     {
         if ($clear) {
@@ -65,6 +81,12 @@ class Element
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param bool   $value
+     *
+     * @return self
+     */
     public function addAttribute($key, $value = true)
     {
         if ($value === null) {
@@ -75,6 +97,12 @@ class Element
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     *
+     * @return self
+     */
     public function addDataAttribute($key, $value = '')
     {
         $this->addAttribute("data-$key", $value);
@@ -82,6 +110,9 @@ class Element
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getAttributes()
     {
         $attributes = $this->attributes;
@@ -94,11 +125,21 @@ class Element
         return $attributes;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string|null
+     */
     public function getAttribute($key)
     {
         return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return self
+     */
     public function removeAttribute($key)
     {
         unset($this->attributes[$key]);
@@ -106,6 +147,9 @@ class Element
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getAttributesString()
     {
         $result = '';
@@ -124,16 +168,29 @@ class Element
         return \trim($result);
     }
 
+    /**
+     * @param string $class
+     *
+     * @return bool
+     */
     public function hasClass($class)
     {
         return \in_array($class, $this->getClasses());
     }
 
+    /**
+     * @return array
+     */
     public function getClasses()
     {
         return $this->classes;
     }
 
+    /**
+     * @param array|string $classes
+     *
+     * @return self
+     */
     public function setClasses($classes)
     {
         if (!\is_array($classes)) {
@@ -144,6 +201,11 @@ class Element
         return $this;
     }
 
+    /**
+     * @param string $class
+     *
+     * @return self
+     */
     public function addClass($class)
     {
         $this->classes[$class] = $class;
@@ -151,6 +213,11 @@ class Element
         return $this;
     }
 
+    /**
+     * @param string $class
+     *
+     * @return self
+     */
     public function removeClass($class)
     {
         unset($this->classes[$class]);
@@ -159,9 +226,9 @@ class Element
     }
 
     /**
-     * @param mixed $tag
+     * @param string $tag
      *
-     * @return Element
+     * @return self
      */
     public function setTag($tag)
     {
@@ -171,18 +238,26 @@ class Element
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTag()
     {
         return $this->tag;
     }
 
+    /**
+     * @return string
+     */
     public function getInnerText()
     {
         return $this->innerText;
     }
 
+    /**
+     * @param array $elements
+     *
+     * @return self
+     */
     public function addChildren(array $elements)
     {
         foreach ($elements as $element) {
@@ -192,6 +267,11 @@ class Element
         return $this;
     }
 
+    /**
+     * @param self $element
+     *
+     * @return self
+     */
     public function addChild(self $element)
     {
         $this->children[] = $element;
@@ -199,6 +279,11 @@ class Element
         return $this;
     }
 
+    /**
+     * @param int $indent
+     *
+     * @return string
+     */
     public function renderChildren($indent = 0)
     {
         if ($this->innerHtml === null) {
@@ -211,6 +296,11 @@ class Element
         return $this->innerHtml;
     }
 
+    /**
+     * @param int $indent
+     *
+     * @return string
+     */
     public function render($indent = 0)
     {
         $tag = $this->getTag();
@@ -254,7 +344,7 @@ class Element
     /**
      * @param string $innerText
      *
-     * @return Element
+     * @return self
      */
     public function setInnerText($innerText)
     {

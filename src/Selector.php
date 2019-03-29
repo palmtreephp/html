@@ -4,9 +4,12 @@ namespace Palmtree\Html;
 
 class Selector
 {
-    protected $tag;
-    protected $id;
-    protected $classes = [];
+    /** @var string */
+    private $tag;
+    /** @var string */
+    private $id;
+    /** @var array */
+    private $classes = [];
 
     const PATTERN = '/(?<tags>[a-zA-Z]+)*(?<ids>#[^#\.]+)*(?<classes>(?:\.[^.#]+)*)/';
 
@@ -17,6 +20,9 @@ class Selector
         }
     }
 
+    /**
+     * @param string $selector
+     */
     public function parse($selector)
     {
         if (\strpos($selector, '#') === false && \strpos($selector, '.') === false) {
@@ -54,9 +60,9 @@ class Selector
     }
 
     /**
-     * @param mixed $tag
+     * @param string $tag
      *
-     * @return Selector
+     * @return self
      */
     public function setTag($tag)
     {
@@ -66,7 +72,7 @@ class Selector
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTag()
     {
@@ -74,9 +80,9 @@ class Selector
     }
 
     /**
-     * @param mixed $id
+     * @param string $id
      *
-     * @return Selector
+     * @return self
      */
     public function setId($id)
     {
@@ -86,7 +92,7 @@ class Selector
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId()
     {
@@ -104,7 +110,7 @@ class Selector
     /**
      * @param array $classes
      *
-     * @return Selector
+     * @return self
      */
     public function setClasses($classes)
     {
@@ -113,6 +119,9 @@ class Selector
         return $this;
     }
 
+    /**
+     * @param string $class
+     */
     public function addClass($class)
     {
         $this->classes[] = $class;

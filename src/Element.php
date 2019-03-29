@@ -119,6 +119,10 @@ class Element
         $classes    = $this->getClasses();
 
         if ($classes) {
+            if (isset($attributes['class'])) {
+                $classes = \array_unique(\array_merge($classes, \explode(' ', $attributes['class'])));
+            }
+
             $attributes['class'] = \implode(' ', $classes);
         }
 

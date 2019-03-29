@@ -1,20 +1,29 @@
 {
-  "name": "palmtree/html",
-  "description": "HTML component for Palmtree PHP",
-  "type": "library",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Andy Palmer",
-      "email": "andy@andypalmer.me"
+    "name": "palmtree/html",
+    "description": "HTML component for Palmtree PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andy Palmer",
+            "email": "andy@andypalmer.me"
+        }
+    ],
+    "require": {
+        "palmtree/argparser": "~1.0"
+    },
+    "require-dev": {
+        "palmtree/php-cs-fixer-config": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Palmtree\\Html\\": "src"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit -v",
+        "sniff": "vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff --diff-format=udiff",
+        "fix": "vendor/bin/php-cs-fixer fix --diff",
+        "lint": "find -L src -path src -prune -o -type f -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
     }
-  ],
-  "require": {
-    "palmtree/argparser": "~1.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Palmtree\\Html\\": "src"
-    }
-  }
 }

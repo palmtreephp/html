@@ -10,9 +10,9 @@ class Element
     protected $innerText = '';
     protected $innerHtml;
     /** @var Element[] */
-    protected $children = [];
+    protected $children   = [];
     protected $attributes = [];
-    protected $classes = [];
+    protected $classes    = [];
 
     public static $voidElements = [
         'area',
@@ -38,9 +38,9 @@ class Element
 
     public function __construct($args = [])
     {
-        if (is_array($args)) {
+        if (\is_array($args)) {
             (new ArgParser($args))->parseSetters($this);
-        } elseif (is_string($args)) {
+        } elseif (\is_string($args)) {
             $selector = new Selector($args);
 
             $this->setTag($selector->getTag());
@@ -88,7 +88,7 @@ class Element
         $classes    = $this->getClasses();
 
         if ($classes) {
-            $attributes['class'] = implode(' ', $classes);
+            $attributes['class'] = \implode(' ', $classes);
         }
 
         return $attributes;
@@ -121,12 +121,12 @@ class Element
             }
         }
 
-        return trim($result);
+        return \trim($result);
     }
 
     public function hasClass($class)
     {
-        return in_array($class, $this->getClasses());
+        return \in_array($class, $this->getClasses());
     }
 
     public function getClasses()
@@ -136,8 +136,8 @@ class Element
 
     public function setClasses($classes)
     {
-        if (!is_array($classes)) {
-            $classes = explode(' ', $classes);
+        if (!\is_array($classes)) {
+            $classes = \explode(' ', $classes);
         }
         $this->classes = $classes;
 
@@ -192,7 +192,7 @@ class Element
         return $this;
     }
 
-    public function addChild(Element $element)
+    public function addChild(self $element)
     {
         $this->children[] = $element;
 
@@ -215,7 +215,7 @@ class Element
     {
         $tag = $this->getTag();
 
-        $html = str_repeat("\t", $indent);
+        $html = \str_repeat("\t", $indent);
 
         $html .= "<$tag";
 
@@ -227,10 +227,10 @@ class Element
 
         $innerText = $this->getInnerText();
 
-        if (in_array($tag, self::$voidElements)) {
+        if (\in_array($tag, self::$voidElements)) {
             $html .= " />$innerText\n";
         } else {
-            $html .= ">";
+            $html .= '>';
 
             if (!empty($innerText)) {
                 $html .= "$innerText";
@@ -240,9 +240,9 @@ class Element
 
             $html .= $innerHtml;
 
-            if (!empty($innerHtml) && empty($innerText) && !in_array($tag, self::$singleLineElements)) {
+            if (!empty($innerHtml) && empty($innerText) && !\in_array($tag, self::$singleLineElements)) {
                 $html .= "\n";
-                $html .= str_repeat("\t", $indent);
+                $html .= \str_repeat("\t", $indent);
             }
 
             $html .= "</$tag>";

@@ -4,19 +4,38 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Palmtree\Html\Element;
 
-$ul = new Element('ul.some-class');
+$menu = new Element('ul.some-class');
 
-$items = ['Hello', 'World', 'Some', 'Data'];
+$menuItems = [];
 
-foreach ($items as $item) {
+$menuItems[] = [
+    'label' => 'Home',
+    'href'  => 'https://example.org',
+];
+
+$menuItems[] = [
+    'label' => 'About',
+    'href'  => 'https://example.org/about',
+];
+
+$menuItems[] = [
+    'label' => 'Contact',
+    'href'  => 'https://example.org/contact',
+];
+
+foreach ($menuItems as $item) {
     $li = new Element('li.item');
-    $li
-        ->addClass('item-' . strtolower($item))
-        ->setInnerText($item);
+    $li->addClass('item-' . \strtolower($item['label']));
 
-    $ul->addChild($li);
+    $a = new Element('a');
+
+    $a->addAttribute('href', $item['href'])->setInnerText($item['label']);
+
+    $li->addChild($a);
+
+    $menu->addChild($li);
 }
 
-$ul->addDataAttribute('item_total', count($items));
+$menu->addDataAttribute('item_total', \count($menuItems));
 
-echo $ul->render();
+echo $menu->render();

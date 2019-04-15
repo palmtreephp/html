@@ -17,20 +17,39 @@ composer require palmtree/html
 <?php
 use Palmtree\Html\Element;
 
-$ul = new Element('ul.some-class');
+$menu = new Element('ul.some-class');
 
-$items = ['Hello', 'World', 'Some', 'Data'];
+$menuItems = [];
 
-foreach($items as $item) {
+$menuItems[] = [
+    'label' => 'Home',
+    'href'  => 'https://example.org',
+];
+
+$menuItems[] = [
+    'label' => 'About',
+    'href'  => 'https://example.org/about',
+];
+
+$menuItems[] = [
+    'label' => 'Contact',
+    'href'  => 'https://example.org/contact',
+];
+
+foreach ($menuItems as $item) {
     $li = new Element('li.item');
-    $li->addClass('item-' . strtolower($item))->setInnerText($item);
+    $li->addClass('item-' . \strtolower($item['label']));
+
+    $a = new Element('a');
+    $a->addAttribute('href', $item['href'])->setInnerText($item['label']);
     
-    $ul->addChild($li);
+    $li->addChild($a);
+    $menu->addChild($li);
 }
 
-$ul->addDataAttribute('item_total', count($items));
+$menu->addDataAttribute('item_total', \count($menuItems));
 
-echo $ul->render();
+echo $menu->render();
 
 ?>
 ```
@@ -38,11 +57,16 @@ echo $ul->render();
 Renders the following HTML:
 
 ```html
-<ul data-item_total="4" class="some-class">
-	<li class="item item-hello">Hello</li>
-	<li class="item item-world">World</li>
-	<li class="item item-some">Some</li>
-	<li class="item item-data">Data</li>
+<ul data-item_total="3" class="some-class">
+	<li class="item item-home">
+		<a href="https://example.org">Home</a>
+	</li>
+	<li class="item item-about">
+		<a href="https://example.org/about">About</a>
+	</li>
+	<li class="item item-contact">
+		<a href="https://example.org/contact">Contact</a>
+	</li>
 </ul>
 ```
 

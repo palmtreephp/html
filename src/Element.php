@@ -18,6 +18,10 @@ class Element
     private $attributes = [];
     /** @var array */
     private $classes = [];
+    /** @var int */
+    private $tabSize = 4;
+    /** @var bool */
+    private $useTab = false;
 
     public static $voidElements = [
         'area',
@@ -309,7 +313,7 @@ class Element
     {
         $tag = $this->getTag();
 
-        $html = \str_repeat("\t", $indent);
+        $html = $this->getIndent($indent);
 
         $html .= "<$tag";
 
@@ -336,13 +340,22 @@ class Element
 
             if (!empty($innerHtml) && empty($innerText) && !\in_array($tag, self::$singleLineElements)) {
                 $html .= "\n";
-                $html .= \str_repeat("\t", $indent);
+                $html .= $this->getIndent($indent);
             }
 
             $html .= "</$tag>";
         }
 
         return $html;
+    }
+
+    private function getIndent($indent)
+    {
+        if ($this->getUseTab()) {
+            return \str_repeat("\t", $indent);
+        } else {
+            return \str_repeat(" ", $indent * $this->getTabSize());
+        }
     }
 
     /**
@@ -355,5 +368,37 @@ class Element
         $this->innerText = $innerText;
 
         return $this;
+    }
+
+    /**
+     * @param int $tabSize
+     */
+    public function setTabSize($tabSize)
+    {
+        $this->tabSize = $tabSize;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTabSize()
+    {
+        return $this->tabSize;
+    }
+
+    /**
+     * @param bool $useTab
+     */
+    public function setUseTab($useTab)
+    {
+        $this->useTab = $useTab;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseTab()
+    {
+        return $this->useTab;
     }
 }

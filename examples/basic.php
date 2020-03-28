@@ -25,7 +25,7 @@ $menuItems[] = [
 
 foreach ($menuItems as $item) {
     $li = new Element('li.item');
-    $li->addClass('item-' . \strtolower($item['label']));
+    $li->addClass('item-' . strtolower($item['label']));
 
     $a = new Element('a');
 
@@ -36,6 +36,6 @@ foreach ($menuItems as $item) {
     $menu->addChild($li);
 }
 
-$menu->addDataAttribute('item_total', \count($menuItems));
+$menu->addDataAttribute('item_total', count($menuItems));
 
 echo $menu->render();

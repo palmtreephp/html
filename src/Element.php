@@ -124,10 +124,10 @@ class Element
 
         if ($classes) {
             if (isset($attributes['class'])) {
-                $classes = \array_unique(\array_merge($classes, \explode(' ', $attributes['class'])));
+                $classes = array_unique(array_merge($classes, explode(' ', $attributes['class'])));
             }
 
-            $attributes['class'] = \implode(' ', $classes);
+            $attributes['class'] = implode(' ', $classes);
         }
 
         return $attributes;
@@ -173,7 +173,7 @@ class Element
             }
         }
 
-        return \trim($result);
+        return trim($result);
     }
 
     /**
@@ -202,7 +202,7 @@ class Element
     public function setClasses($classes)
     {
         if (!\is_array($classes)) {
-            $classes = \explode(' ', $classes);
+            $classes = explode(' ', $classes);
         }
         $this->classes = $classes;
 
@@ -352,9 +352,9 @@ class Element
     private function getIndent($indent)
     {
         if ($this->getUseTab()) {
-            return \str_repeat("\t", $indent);
+            return str_repeat("\t", $indent);
         } else {
-            return \str_repeat(" ", $indent * $this->getTabSize());
+            return str_repeat(' ', $indent * $this->getTabSize());
         }
     }
 

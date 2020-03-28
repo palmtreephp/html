@@ -3,7 +3,9 @@
 Build and render HTML elements using an OOP style interface and jQuery style selectors.
 
 ## Requirements
-* PHP >= 5.6
+* PHP >= 7.1
+
+For PHP 5.6 support use [v1.0](https://github.com/palmtreephp/html/tree/1.0)
 
 ## Installation
 
@@ -58,16 +60,17 @@ Renders the following HTML:
 
 ```html
 <ul data-item_total="3" class="some-class">
-	<li class="item item-home">
-		<a href="https://example.org">Home</a>
-	</li>
-	<li class="item item-about">
-		<a href="https://example.org/about">About</a>
-	</li>
-	<li class="item item-contact">
-		<a href="https://example.org/contact">Contact</a>
-	</li>
+    <li class="item item-home">
+        <a href="https://example.org">Home</a>
+    </li>
+    <li class="item item-about">
+        <a href="https://example.org/about">About</a>
+    </li>
+    <li class="item item-contact">
+        <a href="https://example.org/contact">Contact</a>
+    </li>
 </ul>
+
 ```
 
 ## License

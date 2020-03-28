@@ -25,32 +25,32 @@ class Selector
      */
     public function parse($selector)
     {
-        if (\strpos($selector, '#') === false && \strpos($selector, '.') === false) {
+        if (strpos($selector, '#') === false && strpos($selector, '.') === false) {
             $this->setTag($selector);
 
             return;
         }
 
         $matches = [];
-        \preg_match_all(static::PATTERN, $selector, $matches);
+        preg_match_all(static::PATTERN, $selector, $matches);
 
         if (isset($matches['tags'])) {
-            $tags = \array_filter($matches['tags']);
-            $tag  = \end($tags);
+            $tags = array_filter($matches['tags']);
+            $tag  = end($tags);
             $this->setTag($tag);
         }
 
         if (isset($matches['ids'])) {
-            $ids = \array_filter($matches['ids']);
-            $id  = \end($ids);
+            $ids = array_filter($matches['ids']);
+            $id  = end($ids);
             $this->setId($id);
         }
 
         if (isset($matches['classes'])) {
-            $classes = \array_filter($matches['classes']);
+            $classes = array_filter($matches['classes']);
 
             foreach ($classes as $class) {
-                $parts = \explode('.', \trim($class, '.'));
+                $parts = explode('.', trim($class, '.'));
 
                 foreach ($parts as $part) {
                     $this->addClass($part);

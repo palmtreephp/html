@@ -58,4 +58,11 @@ class ElementTest extends TestCase
         $this->assertSame('bar', $node->getAttribute('data-foo'));
         $this->assertSame('1', $node->getAttribute('checked'));
     }
+
+    public function testAttributeSelector()
+    {
+        $element = Element::create('input[type=checkbox][checked]');
+
+        $this->assertSame('<input type="checkbox" checked />' . PHP_EOL, $element->render());
+    }
 }

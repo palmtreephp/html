@@ -45,17 +45,17 @@ class Element
 
     public function __construct(?string $selector = null)
     {
-        if (\is_string($selector)) {
+        if ($selector) {
             $selector = new Selector($selector);
 
             $this->setTag($selector->getTag());
+            $this->setAttributes($selector->getAttributes());
+
             if ($id = $selector->getId()) {
                 $this->addAttribute('id', $id);
             }
 
-            foreach ($selector->getClasses() as $class) {
-                $this->addClass($class);
-            }
+            $this->addClass(...$selector->getClasses());
         }
     }
 
@@ -112,9 +112,7 @@ class Element
             throw new \InvalidArgumentException('Use ' . __CLASS__ . '::addClass or ' . __CLASS__ . 'setClasses to manipulate \'class\' attribute');
         }
 
-        if ($value !== null) {
-            $this->attributes[$key] = $value;
-        }
+        $this->attributes[$key] = $value;
 
         return $this;
     }

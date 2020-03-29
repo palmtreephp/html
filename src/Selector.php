@@ -10,8 +10,10 @@ class Selector
     private $id;
     /** @var array */
     private $classes = [];
+    /** @var array */
+    private $attributes = [];
 
-    private const PATTERN = '/([a-zA-Z]+)*(#[^#\.]+)*((?:\.[^.#]+)*)/';
+    private const PATTERN = '/([a-zA-Z]+)*((?:\[[^.#\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
 
     public function __construct(string $selector)
     {
@@ -20,7 +22,7 @@ class Selector
 
     private function parse(string $selector): void
     {
-        if (strpos($selector, '#') === false && strpos($selector, '.') === false) {
+        if (strpos($selector, '[') === false && strpos($selector, '#') === false && strpos($selector, '.') === false) {
             $this->tag = $selector;
 
             return;
@@ -35,11 +37,26 @@ class Selector
         $this->tag = $matches[1][0];
 
         if (!empty($matches[2][0])) {
-            $this->id = ltrim($matches[2][0], '#');
+            foreach (explode(']', rtrim($matches[2][0], ']')) as $attribute) {
+                $attribute = ltrim($attribute, '[');
+                $parts     = explode('=', $attribute);
+
+                if ($parts[0] === 'id') {
+                    $this->id = $parts[1];
+                } elseif ($parts[0] === 'class') {
+                    $this->classes[] = $parts[1];
+                } else {
+                    $this->attributes[$parts[0]] = $parts[1] ?? null;
+                }
+            }
         }
 
         if (!empty($matches[3][0])) {
-            foreach (explode('.', trim($matches[3][0], '.')) as $class) {
+            $this->id = ltrim($matches[3][0], '#');
+        }
+
+        if (!empty($matches[4][0])) {
+            foreach (explode('.', trim($matches[4][0], '.')) as $class) {
                 $this->classes[] = $class;
             }
         }
@@ -58,5 +75,10 @@ class Selector
     public function getClasses(): array
     {
         return $this->classes;
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 }

@@ -15,4 +15,11 @@ class SelectorTest extends TestCase
         $this->assertSame('foo', $selector->getId());
         $this->assertSame(['bar', 'baz'], $selector->getClasses());
     }
+
+    public function testAttribute()
+    {
+        $selector = new Selector('input[type=checkbox][checked]');
+
+        $this->assertTrue(true);
+    }
 }

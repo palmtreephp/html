@@ -20,6 +20,7 @@ class SelectorTest extends TestCase
     {
         $selector = new Selector('input[type=checkbox][checked]');
 
-        $this->assertTrue(true);
+        $this->assertArrayHasKey('type', $selector->getAttributes());
+        $this->assertArrayHasKey('checked', $selector->getAttributes());
     }
 }

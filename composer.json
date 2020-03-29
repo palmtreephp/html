@@ -13,11 +13,18 @@
         "php": ">=7.1"
     },
     "require-dev": {
-        "palmtree/php-cs-fixer-config": "~1.0"
+        "ext-dom": "*",
+        "palmtree/php-cs-fixer-config": "~1.0",
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
             "Palmtree\\Html\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Palmtree\\Html\\Test\\": "tests"
         }
     },
     "scripts": {

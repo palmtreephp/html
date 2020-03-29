@@ -233,6 +233,10 @@ class Element
     {
         $this->tabSize = $tabSize;
 
+        foreach ($this->children as $child) {
+            $child->setTabSize($tabSize);
+        }
+
         return $this;
     }
 
@@ -244,6 +248,10 @@ class Element
     public function setUseTab(bool $useTab): self
     {
         $this->useTab = $useTab;
+
+        foreach ($this->children as $child) {
+            $child->setUseTab($useTab);
+        }
 
         return $this;
     }

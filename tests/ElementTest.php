@@ -48,8 +48,8 @@ class ElementTest extends TestCase
                           ->addAttribute('checked', true);
 
         $document = new \DOMDocument();
-        $document->loadXML($element->render());
-        $node = $document->childNodes->item(0);
+        $document->loadHTML($element->render());
+        $node = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
 
         $this->assertSame('input', $node->tagName);
         $this->assertSame('checkbox', $node->getAttribute('type'));
@@ -63,6 +63,6 @@ class ElementTest extends TestCase
     {
         $element = Element::create('input[type=checkbox][checked]');
 
-        $this->assertSame('<input type="checkbox" checked />' . PHP_EOL, $element->render());
+        $this->assertSame('<input type="checkbox" checked>' . PHP_EOL, $element->render());
     }
 }

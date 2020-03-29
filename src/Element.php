@@ -75,7 +75,7 @@ class Element
         }
 
         if (\in_array($this->tag, self::$voidElements)) {
-            $html .= " />$this->innerText" . PHP_EOL;
+            $html .= ">$this->innerText" . PHP_EOL;
 
             return $html;
         }

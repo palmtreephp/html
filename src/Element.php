@@ -59,6 +59,11 @@ class Element
         }
     }
 
+    public static function create(?string $selector = null): self
+    {
+        return new self($selector);
+    }
+
     public function render(int $indentLevel = 0): string
     {
         $html = $indent = $this->getIndent($indentLevel);

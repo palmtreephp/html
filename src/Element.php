@@ -2,8 +2,6 @@
 
 namespace Palmtree\Html;
 
-use Palmtree\ArgParser\ArgParser;
-
 class Element
 {
     /** @var string */
@@ -22,7 +20,7 @@ class Element
     private $tabSize = 4;
     /** @var bool */
     private $useTab = false;
-
+    /** @var array */
     public static $voidElements = [
         'area',
         'base',
@@ -40,25 +38,20 @@ class Element
         'track',
         'wbr',
     ];
-
+    /** @var array */
     public static $singleLineElements = [
         'textarea',
     ];
 
-    /**
-     * Element constructor.
-     *
-     * @param array|string $args
-     */
-    public function __construct($args = [])
+    public function __construct(?string $selector = null)
     {
-        if (\is_array($args)) {
-            (new ArgParser($args))->parseSetters($this);
-        } elseif (\is_string($args)) {
-            $selector = new Selector($args);
+        if (\is_string($selector)) {
+            $selector = new Selector($selector);
 
             $this->setTag($selector->getTag());
-            $this->addAttribute('id', $selector->getId());
+            if ($id = $selector->getId()) {
+                $this->addAttribute('id', $id);
+            }
 
             foreach ($selector->getClasses() as $class) {
                 $this->addClass($class);
@@ -66,17 +59,40 @@ class Element
         }
     }
 
-    /**
-     * @param array $attributes
-     * @param bool  $clear
-     *
-     * @return self
-     */
-    public function setAttributes(array $attributes, $clear = false)
+    public function render(int $indentLevel = 0): string
     {
-        if ($clear) {
-            $this->attributes = [];
+        $html = $indent = $this->getIndent($indentLevel);
+
+        $html .= "<$this->tag";
+
+        if ($attributesString = $this->getAttributesString()) {
+            $html .= " $attributesString";
         }
+
+        if (\in_array($this->tag, self::$voidElements)) {
+            $html .= " />$this->innerText" . PHP_EOL;
+
+            return $html;
+        }
+
+        $html .= ">$this->innerText";
+
+        $innerHtml = $this->getInnerHtml($indentLevel);
+
+        $html .= $innerHtml;
+
+        if (!empty($innerHtml) && empty($this->innerText) && !\in_array($this->tag, self::$singleLineElements)) {
+            $html .= PHP_EOL . $indent;
+        }
+
+        $html .= "</$this->tag>";
+
+        return $html;
+    }
+
+    public function setAttributes(array $attributes): self
+    {
+        $this->attributes = [];
 
         foreach ($attributes as $key => $value) {
             $this->addAttribute($key, $value);
@@ -85,90 +101,56 @@ class Element
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param bool   $value
-     *
-     * @return self
-     */
-    public function addAttribute($key, $value = true)
+    public function addAttribute(string $key, ?string $value = ''): self
     {
-        if ($value === null) {
-            return $this;
+        if ($key === 'class') {
+            throw new \InvalidArgumentException('Use ' . __CLASS__ . '::addClass or ' . __CLASS__ . 'setClasses to manipulate \'class\' attribute');
         }
-        $this->attributes[$key] = $value;
+
+        if ($value !== null) {
+            $this->attributes[$key] = $value;
+        }
 
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     *
-     * @return self
-     */
-    public function addDataAttribute($key, $value = '')
+    public function addDataAttribute(string $key, string $value = ''): self
     {
         $this->addAttribute("data-$key", $value);
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes = $this->attributes;
-        $classes    = $this->getClasses();
 
-        if ($classes) {
-            if (isset($attributes['class'])) {
-                $classes = array_unique(array_merge($classes, explode(' ', $attributes['class'])));
-            }
-
-            $attributes['class'] = implode(' ', $classes);
+        if ($this->classes) {
+            $attributes['class'] = implode(' ', $this->classes);
         }
 
         return $attributes;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string|null
-     */
-    public function getAttribute($key)
+    public function getAttribute(string $key): ?string
     {
-        return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
+        return $this->attributes[$key] ?? null;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return self
-     */
-    public function removeAttribute($key)
+    public function removeAttribute(string $key): self
     {
         unset($this->attributes[$key]);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getAttributesString()
+    public function getAttributesString(): string
     {
         $result = '';
 
         foreach ($this->getAttributes() as $key => $value) {
-            if ($value === false) {
-                continue;
-            }
-
             $result .= " $key";
-            if ($value !== true) {
+            if (!empty($value)) {
                 $result .= "=\"$value\"";
             }
         }
@@ -176,229 +158,107 @@ class Element
         return trim($result);
     }
 
-    /**
-     * @param string $class
-     *
-     * @return bool
-     */
-    public function hasClass($class)
+    public function hasClass(string $class): bool
     {
-        return \in_array($class, $this->getClasses());
+        return isset($this->classes[$class]);
     }
 
-    /**
-     * @return array
-     */
-    public function getClasses()
+    public function getClasses(): array
     {
         return $this->classes;
     }
 
-    /**
-     * @param array|string $classes
-     *
-     * @return self
-     */
-    public function setClasses($classes)
+    public function addClass(string ...$classes): self
     {
-        if (!\is_array($classes)) {
-            $classes = explode(' ', $classes);
+        foreach ($classes as $class) {
+            $this->classes[$class] = $class;
         }
-        $this->classes = $classes;
 
         return $this;
     }
 
-    /**
-     * @param string $class
-     *
-     * @return self
-     */
-    public function addClass($class)
-    {
-        $this->classes[$class] = $class;
-
-        return $this;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return self
-     */
-    public function removeClass($class)
+    public function removeClass(string $class): self
     {
         unset($this->classes[$class]);
 
         return $this;
     }
 
-    /**
-     * @param string $tag
-     *
-     * @return self
-     */
-    public function setTag($tag)
+    public function setTag(string $tag): self
     {
         $this->tag = $tag;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTag()
+    public function getTag(): string
     {
         return $this->tag;
     }
 
-    /**
-     * @return string
-     */
-    public function getInnerText()
-    {
-        return $this->innerText;
-    }
-
-    /**
-     * @param array $elements
-     *
-     * @return self
-     */
-    public function addChildren(array $elements)
-    {
-        foreach ($elements as $element) {
-            $this->addChild($element);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param self $element
-     *
-     * @return self
-     */
-    public function addChild(self $element)
-    {
-        $this->children[] = $element;
-
-        return $this;
-    }
-
-    /**
-     * @param int $indent
-     *
-     * @return string
-     */
-    public function renderChildren($indent = 0)
-    {
-        if ($this->innerHtml === null) {
-            $this->innerHtml = '';
-            foreach ($this->children as $element) {
-                $this->innerHtml .= "\n" . $element->render($indent + 1);
-            }
-        }
-
-        return $this->innerHtml;
-    }
-
-    /**
-     * @param int $indent
-     *
-     * @return string
-     */
-    public function render($indent = 0)
-    {
-        $tag = $this->getTag();
-
-        $html = $this->getIndent($indent);
-
-        $html .= "<$tag";
-
-        $attributesString = $this->getAttributesString();
-
-        if (!empty($attributesString)) {
-            $html .= ' ' . $this->getAttributesString();
-        }
-
-        $innerText = $this->getInnerText();
-
-        if (\in_array($tag, self::$voidElements)) {
-            $html .= " />$innerText\n";
-        } else {
-            $html .= '>';
-
-            if (!empty($innerText)) {
-                $html .= "$innerText";
-            }
-
-            $innerHtml = $this->renderChildren($indent);
-
-            $html .= $innerHtml;
-
-            if (!empty($innerHtml) && empty($innerText) && !\in_array($tag, self::$singleLineElements)) {
-                $html .= "\n";
-                $html .= $this->getIndent($indent);
-            }
-
-            $html .= "</$tag>";
-        }
-
-        return $html;
-    }
-
-    private function getIndent($indent)
-    {
-        if ($this->getUseTab()) {
-            return str_repeat("\t", $indent);
-        } else {
-            return str_repeat(' ', $indent * $this->getTabSize());
-        }
-    }
-
-    /**
-     * @param string $innerText
-     *
-     * @return self
-     */
-    public function setInnerText($innerText)
+    public function setInnerText(string $innerText): self
     {
         $this->innerText = $innerText;
 
         return $this;
     }
 
-    /**
-     * @param int $tabSize
-     */
-    public function setTabSize($tabSize)
+    public function getInnerText(): string
     {
-        $this->tabSize = $tabSize;
+        return $this->innerText;
     }
 
-    /**
-     * @return int
-     */
-    public function getTabSize()
+    public function addChild(self ...$elements): self
+    {
+        foreach ($elements as $element) {
+            $this->children[] = $element;
+        }
+
+        return $this;
+    }
+
+    public function getInnerHtml(int $indentLevel = 0): string
+    {
+        if ($this->innerHtml === null) {
+            $this->innerHtml = '';
+            foreach ($this->children as $element) {
+                $this->innerHtml .= PHP_EOL . $element->render($indentLevel + 1);
+            }
+        }
+
+        return $this->innerHtml;
+    }
+
+    public function setTabSize(int $tabSize): self
+    {
+        $this->tabSize = $tabSize;
+
+        return $this;
+    }
+
+    public function getTabSize(): int
     {
         return $this->tabSize;
     }
 
-    /**
-     * @param bool $useTab
-     */
-    public function setUseTab($useTab)
+    public function setUseTab(bool $useTab): self
     {
         $this->useTab = $useTab;
+
+        return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getUseTab()
+    public function getUseTab(): bool
     {
         return $this->useTab;
+    }
+
+    private function getIndent(int $level): string
+    {
+        if ($this->useTab) {
+            return str_repeat("\t", $level);
+        }
+
+        return str_repeat(' ', $level * $this->tabSize);
     }
 }

@@ -4,7 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Palmtree\Html\Element;
 
-$menu = new Element('ul.some-class');
+$menu = new Element('ul#myMenu.some-class.some-other-class');
 
 $menuItems = [];
 

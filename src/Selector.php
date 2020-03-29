@@ -11,119 +11,52 @@ class Selector
     /** @var array */
     private $classes = [];
 
-    const PATTERN = '/(?<tags>[a-zA-Z]+)*(?<ids>#[^#\.]+)*(?<classes>(?:\.[^.#]+)*)/';
+    private const PATTERN = '/([a-zA-Z]+)*(#[^#\.]+)*((?:\.[^.#]+)*)/';
 
-    public function __construct($selector = null)
+    public function __construct(string $selector)
     {
-        if ($selector !== null) {
-            $this->parse($selector);
-        }
+        $this->parse($selector);
     }
 
-    /**
-     * @param string $selector
-     */
-    public function parse($selector)
+    private function parse(string $selector): void
     {
         if (strpos($selector, '#') === false && strpos($selector, '.') === false) {
-            $this->setTag($selector);
+            $this->tag = $selector;
 
             return;
         }
 
-        $matches = [];
-        preg_match_all(static::PATTERN, $selector, $matches);
+        preg_match_all(self::PATTERN, $selector, $matches);
 
-        if (isset($matches['tags'])) {
-            $tags = array_filter($matches['tags']);
-            $tag  = end($tags);
-            $this->setTag($tag);
+        if (empty($matches[1][0])) {
+            throw new \LogicException('Selector must contain at least a tag');
         }
 
-        if (isset($matches['ids'])) {
-            $ids = array_filter($matches['ids']);
-            $id  = end($ids);
-            $this->setId($id);
+        $this->tag = $matches[1][0];
+
+        if (!empty($matches[2][0])) {
+            $this->id = ltrim($matches[2][0], '#');
         }
 
-        if (isset($matches['classes'])) {
-            $classes = array_filter($matches['classes']);
-
-            foreach ($classes as $class) {
-                $parts = explode('.', trim($class, '.'));
-
-                foreach ($parts as $part) {
-                    $this->addClass($part);
-                }
+        if (!empty($matches[3][0])) {
+            foreach (explode('.', trim($matches[3][0], '.')) as $class) {
+                $this->classes[] = $class;
             }
         }
     }
 
-    /**
-     * @param string $tag
-     *
-     * @return self
-     */
-    public function setTag($tag)
-    {
-        $this->tag = $tag;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTag()
+    public function getTag(): string
     {
         return $this->tag;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @return array
-     */
-    public function getClasses()
+    public function getClasses(): array
     {
         return $this->classes;
-    }
-
-    /**
-     * @param array $classes
-     *
-     * @return self
-     */
-    public function setClasses($classes)
-    {
-        $this->classes = $classes;
-
-        return $this;
-    }
-
-    /**
-     * @param string $class
-     */
-    public function addClass($class)
-    {
-        $this->classes[] = $class;
     }
 }

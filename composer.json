@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "palmtree/argparser": "~1.0"
+        "php": ">=7.1"
     },
     "require-dev": {
         "palmtree/php-cs-fixer-config": "~1.0"

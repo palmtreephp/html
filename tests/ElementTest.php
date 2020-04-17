@@ -67,4 +67,22 @@ class ElementTest extends TestCase
 
         $this->assertSame('<input type="checkbox" checked>' . PHP_EOL, $element->render());
     }
+
+    public function testInnerText()
+    {
+        $div = Element::create('div')->setInnerText('Hello, World!');
+
+        $this->assertSame('Hello, World!', $div->getInnerText());
+
+        $this->assertSame('<div>Hello, World!</div>', $div->render());
+    }
+
+    public function testDefaultGetters()
+    {
+        $div = new Element('div');
+
+        $this->assertSame('div', $div->getTag());
+        $this->assertSame(4, $div->getTabSize());
+        $this->assertFalse($div->getUseTab());
+    }
 }

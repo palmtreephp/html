@@ -2,6 +2,7 @@
 
 namespace Palmtree\Html\Test;
 
+use Palmtree\Html\Exception\BadSelectorException;
 use Palmtree\Html\Selector;
 use PHPUnit\Framework\TestCase;
 
@@ -37,5 +38,12 @@ class SelectorTest extends TestCase
         $selector = new Selector('div[class="foo bar"].baz');
 
         $this->assertSame(['foo', 'bar', 'baz'], $selector->classes->values()->all());
+    }
+
+    public function testBadSelector()
+    {
+        $this->expectException(BadSelectorException::class);
+
+        new Selector('#foo');
     }
 }

@@ -48,13 +48,13 @@ class Element
     /** @var bool */
     private $useTab = false;
 
-    public function __construct(?string $selector = null)
+    public function __construct(?string $selectorString = null)
     {
         $this->attributes = new AttributeCollection();
         $this->classes    = new ClassCollection();
 
-        if ($selector) {
-            $selector = new Selector($selector);
+        if ($selectorString) {
+            $selector = new Selector($selectorString);
 
             $this->setTag($selector->getTag());
 

@@ -1,5 +1,10 @@
 # :palm_tree: Palmtree Html
 
+[![License](http://img.shields.io/packagist/l/palmtree/html.svg)](LICENSE)
+[![Build Status](https://scrutinizer-ci.com/g/palmtreephp/html/badges/build.png?b=master)](https://scrutinizer-ci.com/g/palmtreephp/html/build-status/master)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/palmtreephp/html.svg)](https://scrutinizer-ci.com/g/palmtreephp/html/)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/palmtreephp/html.svg)](https://scrutinizer-ci.com/g/palmtreephp/html/)
+
 Build and render HTML elements using an OOP style interface and jQuery style selectors.
 
 ## Requirements

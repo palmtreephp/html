@@ -34,18 +34,20 @@ class ElementTest extends TestCase
 
     public function testAddClass()
     {
-        $element = Element::create('div')->addClass('foo', 'bar');
+        $element = Element::create('div');
+        $element->classes->add('foo', 'bar');
 
-        $this->assertTrue($element->hasClass('foo'));
-        $this->assertTrue($element->hasClass('bar'));
+        $this->assertTrue($element->classes->has('foo'));
+        $this->assertTrue($element->classes->has('bar'));
     }
 
     public function testAttributes()
     {
-        $element = Element::create('input#foo.bar.baz')
-                          ->addDataAttribute('foo', 'bar')
-                          ->addAttribute('type', 'checkbox')
-                          ->addAttribute('checked', true);
+        $element = Element::create('input#foo.bar.baz');
+
+        $element->attributes->setData('foo', 'bar')
+                            ->set('type', 'checkbox')
+                            ->set('checked', true);
 
         $document = new \DOMDocument();
         $document->loadHTML($element->render());

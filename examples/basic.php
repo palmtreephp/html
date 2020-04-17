@@ -24,12 +24,15 @@ $menuItems[] = [
 ];
 
 foreach ($menuItems as $item) {
-    $a  = Element::create('a')->addAttribute('href', $item['href'])->setInnerText($item['label']);
-    $li = Element::create('li.item')->addClass('item-' . strtolower($item['label']))->addChild($a);
+    $li = Element::create('li.item')->addChild(
+        Element::create('a[href="' . $item['href'] . '"]')->setInnerText($item['label'])
+    );
+
+    $li->classes[] = 'item-' . strtolower($item['label']);
 
     $menu->addChild($li);
 }
 
-$menu->addDataAttribute('item_total', count($menuItems));
+$menu->attributes->setData('item_total', count($menuItems));
 
 echo $menu->render();

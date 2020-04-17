@@ -13,14 +13,29 @@ class SelectorTest extends TestCase
 
         $this->assertSame('div', $selector->getTag());
         $this->assertSame('foo', $selector->getId());
-        $this->assertSame(['bar', 'baz'], $selector->getClasses());
+        $this->assertSame(['bar', 'baz'], $selector->classes->values()->all());
     }
 
     public function testAttribute()
     {
         $selector = new Selector('input[type=checkbox][checked]');
 
-        $this->assertArrayHasKey('type', $selector->getAttributes());
-        $this->assertArrayHasKey('checked', $selector->getAttributes());
+        $this->assertArrayHasKey('type', $selector->attributes->all());
+        $this->assertArrayHasKey('checked', $selector->attributes->all());
+    }
+
+    public function testHrefAttribute()
+    {
+        $selector = new Selector('a[href=https://example.org][id="foo"]');
+
+        $this->assertSame('https://example.org', $selector->attributes->get('href'));
+        $this->assertSame('foo', $selector->getId());
+    }
+
+    public function testClassesViaAttributeAndSelector()
+    {
+        $selector = new Selector('div[class="foo bar"].baz');
+
+        $this->assertSame(['foo', 'bar', 'baz'], $selector->classes->values()->all());
     }
 }

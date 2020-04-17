@@ -2,24 +2,11 @@
 
 namespace Palmtree\Html;
 
+use Palmtree\Html\Collection\AttributeCollection;
+use Palmtree\Html\Collection\ClassCollection;
+
 class Element
 {
-    /** @var string */
-    private $tag;
-    /** @var string */
-    private $innerText = '';
-    /** @var string */
-    private $innerHtml;
-    /** @var Element[] */
-    private $children = [];
-    /** @var array */
-    private $attributes = [];
-    /** @var array */
-    private $classes = [];
-    /** @var int */
-    private $tabSize = 4;
-    /** @var bool */
-    private $useTab = false;
     /** @var array */
     public static $voidElements = [
         'area',
@@ -38,24 +25,48 @@ class Element
         'track',
         'wbr',
     ];
+
     /** @var array */
     public static $singleLineElements = [
         'textarea',
     ];
 
+    /** @var AttributeCollection */
+    public $attributes;
+    /** @var ClassCollection */
+    public $classes;
+    /** @var string */
+    private $tag;
+    /** @var string */
+    private $innerText = '';
+    /** @var string */
+    private $innerHtml;
+    /** @var Element[] */
+    private $children = [];
+    /** @var int */
+    private $tabSize = 4;
+    /** @var bool */
+    private $useTab = false;
+
     public function __construct(?string $selector = null)
     {
+        $this->attributes = new AttributeCollection();
+        $this->classes    = new ClassCollection();
+
         if ($selector) {
             $selector = new Selector($selector);
 
             $this->setTag($selector->getTag());
-            $this->setAttributes($selector->getAttributes());
 
-            if ($id = $selector->getId()) {
-                $this->addAttribute('id', $id);
+            foreach ($selector->attributes as $key => $value) {
+                $this->attributes->set($key, $value);
             }
 
-            $this->addClass(...$selector->getClasses());
+            if ($id = $selector->getId()) {
+                $this->attributes->set('id', $id);
+            }
+
+            $this->classes->add(...$selector->classes->values()->all());
         }
     }
 
@@ -66,15 +77,13 @@ class Element
 
     public function render(int $indentLevel = 0): string
     {
-        $html = $indent = $this->getIndent($indentLevel);
+        $indent = $this->getIndent($indentLevel);
 
-        $html .= "<$this->tag";
+        $html = "$indent<$this->tag";
+        $html .= $this->classes;
+        $html .= $this->attributes;
 
-        if ($attributesString = $this->getAttributesString()) {
-            $html .= " $attributesString";
-        }
-
-        if (\in_array($this->tag, self::$voidElements)) {
+        if (\in_array($this->tag, self::$voidElements, true)) {
             $html .= ">$this->innerText" . PHP_EOL;
 
             return $html;
@@ -86,105 +95,13 @@ class Element
 
         $html .= $innerHtml;
 
-        if (!empty($innerHtml) && empty($this->innerText) && !\in_array($this->tag, self::$singleLineElements)) {
+        if (!empty($innerHtml) && empty($this->innerText) && !\in_array($this->tag, self::$singleLineElements, true)) {
             $html .= PHP_EOL . $indent;
         }
 
         $html .= "</$this->tag>";
 
         return $html;
-    }
-
-    public function setAttributes(array $attributes): self
-    {
-        $this->attributes = [];
-
-        foreach ($attributes as $key => $value) {
-            $this->addAttribute($key, $value);
-        }
-
-        return $this;
-    }
-
-    public function addAttribute(string $key, ?string $value = ''): self
-    {
-        if ($key === 'class') {
-            throw new \InvalidArgumentException('Use ' . __CLASS__ . '::addClass or ' . __CLASS__ . 'setClasses to manipulate \'class\' attribute');
-        }
-
-        $this->attributes[$key] = $value;
-
-        return $this;
-    }
-
-    public function addDataAttribute(string $key, string $value = ''): self
-    {
-        $this->addAttribute("data-$key", $value);
-
-        return $this;
-    }
-
-    public function getAttributes(): array
-    {
-        $attributes = $this->attributes;
-
-        if ($this->classes) {
-            $attributes['class'] = implode(' ', $this->classes);
-        }
-
-        return $attributes;
-    }
-
-    public function getAttribute(string $key): ?string
-    {
-        return $this->attributes[$key] ?? null;
-    }
-
-    public function removeAttribute(string $key): self
-    {
-        unset($this->attributes[$key]);
-
-        return $this;
-    }
-
-    public function getAttributesString(): string
-    {
-        $result = '';
-
-        foreach ($this->getAttributes() as $key => $value) {
-            $result .= " $key";
-            if (!empty($value)) {
-                $result .= "=\"$value\"";
-            }
-        }
-
-        return trim($result);
-    }
-
-    public function hasClass(string $class): bool
-    {
-        return isset($this->classes[$class]);
-    }
-
-    public function getClasses(): array
-    {
-        return $this->classes;
-    }
-
-    public function addClass(string ...$classes): self
-    {
-        foreach ($classes as $class) {
-            $this->classes[$class] = $class;
-        }
-
-        return $this;
-    }
-
-    public function removeClass(string $class): self
-    {
-        unset($this->classes[$class]);
-
-        return $this;
     }
 
     public function setTag(string $tag): self

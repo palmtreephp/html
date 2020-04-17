@@ -39,14 +39,16 @@ $menuItems[] = [
 ];
 
 foreach ($menuItems as $item) {
-    $a  = Element::create('a')->addAttribute('href', $item['href'])->setInnerText($item['label']);
-    $li = Element::create('li.item')->addClass('item-' . strtolower($item['label']))->addChild($a);
+    $a = Element::create('a[href="' . $item['href'] . '"]')->setInnerText($item['label']);
+
+    $li = Element::create('li.item')->addChild($a);
+    $li->classes[] = 'item-' . strtolower($item['label']);
 
     $menu->addChild($li);
 }
 
 
-$menu->addDataAttribute('item_total', \count($menuItems));
+$menu->attributes->setData('item_total', count($menuItems));
 
 echo $menu->render();
 
@@ -56,7 +58,7 @@ echo $menu->render();
 Renders the following HTML:
 
 ```html
-<ul data-item_total="3" class="some-class">
+<ul class="some-class" data-item_total="3">
     <li class="item item-home">
         <a href="https://example.org">Home</a>
     </li>
@@ -67,7 +69,6 @@ Renders the following HTML:
         <a href="https://example.org/contact">Contact</a>
     </li>
 </ul>
-
 ```
 
 ## License

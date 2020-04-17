@@ -2,21 +2,31 @@
 
 namespace Palmtree\Html;
 
+use Palmtree\Html\Collection\AttributeCollection;
+use Palmtree\Html\Collection\ClassCollection;
+use Palmtree\Html\Exception\BadSelectorException;
+
 class Selector
 {
     /** @var string */
     private $tag;
     /** @var string */
     private $id;
-    /** @var array */
-    private $classes = [];
-    /** @var array */
-    private $attributes = [];
+    /** @var ClassCollection */
+    public $classes;
+    /** @var AttributeCollection */
+    public $attributes;
 
-    private const PATTERN = '/([a-zA-Z]+)*((?:\[[^.#\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
+    private const PATTERN           = '/([a-zA-Z]+)*((?:\[[^\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
+    private const TAG_MATCHES       = 1;
+    private const ATTRIBUTE_MATCHES = 2;
+    private const ID_MATCHES        = 3;
+    private const CLASS_MATCHES     = 4;
 
     public function __construct(string $selector)
     {
+        $this->classes    = new ClassCollection();
+        $this->attributes = new AttributeCollection();
         $this->parse($selector);
     }
 
@@ -30,35 +40,36 @@ class Selector
 
         preg_match_all(self::PATTERN, $selector, $matches);
 
-        if (empty($matches[1][0])) {
-            throw new \LogicException('Selector must contain at least a tag');
+        if (empty($matches[self::TAG_MATCHES][0])) {
+            throw new BadSelectorException('Selector must contain at least a tag');
         }
 
-        $this->tag = $matches[1][0];
+        $this->tag = $matches[self::TAG_MATCHES][0];
 
-        if (!empty($matches[2][0])) {
-            foreach (explode(']', rtrim($matches[2][0], ']')) as $attribute) {
+        if (!empty($matches[self::ATTRIBUTE_MATCHES][0])) {
+            foreach (explode(']', rtrim($matches[self::ATTRIBUTE_MATCHES][0], ']')) as $attribute) {
                 $attribute = ltrim($attribute, '[');
                 $parts     = explode('=', $attribute);
+                if (isset($parts[1])) {
+                    $parts[1] = trim($parts[1], '"\'');
+                }
 
                 if ($parts[0] === 'id') {
                     $this->id = $parts[1];
                 } elseif ($parts[0] === 'class') {
-                    $this->classes[] = $parts[1];
+                    $this->classes->add(...explode(' ', $parts[1]));
                 } else {
-                    $this->attributes[$parts[0]] = $parts[1] ?? null;
+                    $this->attributes->set($parts[0], $parts[1] ?? null);
                 }
             }
         }
 
-        if (!empty($matches[3][0])) {
-            $this->id = ltrim($matches[3][0], '#');
+        if (!empty($matches[self::ID_MATCHES][0])) {
+            $this->id = ltrim($matches[self::ID_MATCHES][0], '#');
         }
 
-        if (!empty($matches[4][0])) {
-            foreach (explode('.', trim($matches[4][0], '.')) as $class) {
-                $this->classes[] = $class;
-            }
+        if (!empty($matches[self::CLASS_MATCHES][0])) {
+            $this->classes->add(...explode('.', trim($matches[self::CLASS_MATCHES][0], '.')));
         }
     }
 
@@ -70,15 +81,5 @@ class Selector
     public function getId(): ?string
     {
         return $this->id;
-    }
-
-    public function getClasses(): array
-    {
-        return $this->classes;
-    }
-
-    public function getAttributes(): array
-    {
-        return $this->attributes;
     }
 }

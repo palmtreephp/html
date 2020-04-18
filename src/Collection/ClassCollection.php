@@ -18,7 +18,7 @@ class ClassCollection extends AbstractCollection
 
     public function __toString(): string
     {
-        if (empty($this->elements)) {
+        if ($this->isEmpty()) {
             return '';
         }
 

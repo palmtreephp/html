@@ -2,7 +2,7 @@
 
 namespace Palmtree\Html\Collection;
 
-abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate
+abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     protected $elements = [];
 
@@ -45,6 +45,16 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate
         unset($this->elements[$key]);
 
         return $this;
+    }
+
+    public function count(): int
+    {
+        return \count($this->elements);
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->elements);
     }
 
     public function getIterator(): \ArrayIterator

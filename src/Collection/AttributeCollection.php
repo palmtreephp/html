@@ -4,6 +4,15 @@ namespace Palmtree\Html\Collection;
 
 class AttributeCollection extends AbstractCollection
 {
+    public function add(array $elements): self
+    {
+        foreach ($elements as $key => $value) {
+            $this->set($key, $value);
+        }
+
+        return $this;
+    }
+
     public function setData(string $key, string $value = ''): self
     {
         $this->set("data-$key", $value);

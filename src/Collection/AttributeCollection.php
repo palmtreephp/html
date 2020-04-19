@@ -27,11 +27,16 @@ class AttributeCollection extends AbstractCollection
             return '';
         }
 
-        $bits = [];
+        $attributeStrings = [];
         foreach ($this->elements as $key => $value) {
-            $bits[] = $key . (empty($value) ? '' : "=\"$value\"");
+            $attributeString = $key;
+            if ($value !== null && $value !== '') {
+                $attributeString .= '="' . $value . '"';
+            }
+
+            $attributeStrings[] = $attributeString;
         }
 
-        return ' ' . implode(' ', $bits);
+        return ' ' . implode(' ', $attributeStrings);
     }
 }

@@ -11,6 +11,11 @@ class AttributeCollection extends AbstractCollection
         return $this;
     }
 
+    public function removeData(string $key): self
+    {
+        return $this->remove("data-$key");
+    }
+
     public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);

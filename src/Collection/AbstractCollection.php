@@ -4,6 +4,7 @@ namespace Palmtree\Html\Collection;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
+    /** @var array */
     protected $elements = [];
 
     final public function __construct(array $elements = [])

@@ -4,11 +4,13 @@ namespace Palmtree\Html\Collection;
 
 class ClassCollection extends AbstractCollection
 {
-    public function add(string ...$classes): void
+    public function add(string ...$classes): self
     {
         foreach ($classes as $class) {
             $this->set($class, $class);
         }
+
+        return $this;
     }
 
     public function offsetSet($offset, $value): void

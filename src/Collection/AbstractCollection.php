@@ -30,6 +30,11 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return $this->elements;
     }
 
+    public function clear(): void
+    {
+        $this->elements = [];
+    }
+
     public function values(): self
     {
         return new static(array_values($this->elements));
@@ -67,7 +72,7 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return $this->has($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?string
     {
         return $this->get($offset);
     }

@@ -36,9 +36,13 @@ jobs:
         if: matrix.php-versions == 8.0
 
       - name: PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff --diff-format=udiff
+        run: ./vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff
         if: matrix.php-versions == 8.0
 
       - name: Psalm
         run: ./vendor/bin/psalm --config=psalm.xml --no-cache
+        if: matrix.php-versions == 8.0
+
+      - name: PHPUnit
+        run: ./vendor/bin/phpunit -v
         if: matrix.php-versions == 8.0

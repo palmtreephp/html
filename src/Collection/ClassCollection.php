@@ -19,7 +19,7 @@ class ClassCollection extends AbstractCollection
     }
 
     /**
-     * @param null $offset
+     * @param null   $offset
      * @param string $value
      * @psalm-suppress MoreSpecificImplementedParamType
      */

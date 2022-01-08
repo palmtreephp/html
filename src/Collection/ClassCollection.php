@@ -18,6 +18,11 @@ class ClassCollection extends AbstractCollection
         return $this;
     }
 
+    /**
+     * @param null $offset
+     * @param string $value
+     * @psalm-suppress MoreSpecificImplementedParamType
+     */
     public function offsetSet($offset, $value): void
     {
         $this->elements[$value] = $value;

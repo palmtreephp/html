@@ -32,6 +32,10 @@ final class AttributeCollection extends AbstractCollection
         return $this;
     }
 
+    /**
+     * @param string $offset
+     * @param string $value
+     */
     public function offsetSet($offset, $value): void
     {
         $this->set($offset, $value);

@@ -14,8 +14,9 @@
     },
     "require-dev": {
         "ext-dom": "*",
-        "palmtree/php-cs-fixer-config": "~1.0",
-        "phpunit/phpunit": "^9.0"
+        "palmtree/php-cs-fixer-config": "^2.0",
+        "phpunit/phpunit": "^9.0",
+        "vimeo/psalm": "^4.18"
     },
     "autoload": {
         "psr-4": {
@@ -29,8 +30,8 @@
     },
     "scripts": {
         "test": "./vendor/bin/phpunit -v",
-        "sniff": "vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff --diff-format=udiff",
         "fix": "vendor/bin/php-cs-fixer fix --diff",
-        "lint": "find -L src -path src -prune -o -type f -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+        "psalm": "vendor/bin/psalm --no-cache",
+        "lint": "find -L src -type f -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
     }
 }

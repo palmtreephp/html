@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Palmtree\Html;
 
 use Palmtree\Html\Collection\AttributeCollection;
@@ -17,15 +19,15 @@ class Selector
     /** @var AttributeCollection */
     public $attributes;
 
-    private const PATTERN           = '/([a-zA-Z]+)*((?:\[[^\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
-    private const TAG_MATCHES       = 1;
+    private const PATTERN = '/([a-zA-Z]+)*((?:\[[^\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
+    private const TAG_MATCHES = 1;
     private const ATTRIBUTE_MATCHES = 2;
-    private const ID_MATCHES        = 3;
-    private const CLASS_MATCHES     = 4;
+    private const ID_MATCHES = 3;
+    private const CLASS_MATCHES = 4;
 
     public function __construct(string $selector)
     {
-        $this->classes    = new ClassCollection();
+        $this->classes = new ClassCollection();
         $this->attributes = new AttributeCollection();
         $this->parse($selector);
     }
@@ -49,7 +51,7 @@ class Selector
         if (!empty($matches[self::ATTRIBUTE_MATCHES][0])) {
             foreach (explode(']', rtrim($matches[self::ATTRIBUTE_MATCHES][0], ']')) as $attribute) {
                 $attribute = ltrim($attribute, '[');
-                $parts     = explode('=', $attribute);
+                $parts = explode('=', $attribute);
                 if (isset($parts[1])) {
                     $parts[1] = trim($parts[1], '"\'');
                 }
@@ -59,7 +61,7 @@ class Selector
                 } elseif ($parts[0] === 'class') {
                     $this->classes->add(...explode(' ', $parts[1]));
                 } else {
-                    $this->attributes->set($parts[0], $parts[1] ?? null);
+                    $this->attributes->set($parts[0], $parts[1] ?? '');
                 }
             }
         }

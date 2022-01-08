@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Palmtree\Html\Collection;
 
-class AttributeCollection extends AbstractCollection
+/**
+ * @template-extends AbstractCollection<string>
+ */
+final class AttributeCollection extends AbstractCollection
 {
     public function add(array $elements): self
     {
@@ -22,7 +27,9 @@ class AttributeCollection extends AbstractCollection
 
     public function removeData(string $key): self
     {
-        return $this->remove("data-$key");
+        $this->remove("data-$key");
+
+        return $this;
     }
 
     public function offsetSet($offset, $value): void
@@ -39,7 +46,7 @@ class AttributeCollection extends AbstractCollection
         $attributeStrings = [];
         foreach ($this->elements as $key => $value) {
             $attributeString = $key;
-            if ($value !== null && $value !== '') {
+            if ($value !== '') {
                 $attributeString .= '="' . $value . '"';
             }
 

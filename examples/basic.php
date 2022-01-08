@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Palmtree\Html\Element;
@@ -10,17 +12,17 @@ $menuItems = [];
 
 $menuItems[] = [
     'label' => 'Home',
-    'href'  => 'https://example.org',
+    'href' => 'https://example.org',
 ];
 
 $menuItems[] = [
     'label' => 'About',
-    'href'  => 'https://example.org/about',
+    'href' => 'https://example.org/about',
 ];
 
 $menuItems[] = [
     'label' => 'Contact',
-    'href'  => 'https://example.org/contact',
+    'href' => 'https://example.org/contact',
 ];
 
 foreach ($menuItems as $item) {
@@ -33,6 +35,6 @@ foreach ($menuItems as $item) {
     $menu->addChild($li);
 }
 
-$menu->attributes->setData('item_total', count($menuItems));
+$menu->attributes->setData('item_total', (string)count($menuItems));
 
 echo $menu->render();

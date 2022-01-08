@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Palmtree\Html;
 
 use Palmtree\Html\Collection\AttributeCollection;
@@ -39,7 +41,7 @@ class Element
     private $tag;
     /** @var string */
     private $innerText = '';
-    /** @var string */
+    /** @var string|null */
     private $innerHtml;
     /** @var Element[] */
     private $children = [];
@@ -51,7 +53,7 @@ class Element
     public function __construct(?string $selectorString = null)
     {
         $this->attributes = new AttributeCollection();
-        $this->classes    = new ClassCollection();
+        $this->classes = new ClassCollection();
 
         if ($selectorString) {
             $selector = new Selector($selectorString);
@@ -84,7 +86,7 @@ class Element
         $html .= $this->attributes;
 
         if (\in_array($this->tag, self::$voidElements, true)) {
-            $html .= ">$this->innerText" . PHP_EOL;
+            $html .= ">$this->innerText" . \PHP_EOL;
 
             return $html;
         }
@@ -96,7 +98,7 @@ class Element
         $html .= $innerHtml;
 
         if (!empty($innerHtml) && empty($this->innerText) && !\in_array($this->tag, self::$singleLineElements, true)) {
-            $html .= PHP_EOL . $indent;
+            $html .= \PHP_EOL . $indent;
         }
 
         $html .= "</$this->tag>";
@@ -142,7 +144,7 @@ class Element
         if ($this->innerHtml === null) {
             $this->innerHtml = '';
             foreach ($this->children as $element) {
-                $this->innerHtml .= PHP_EOL . $element->render($indentLevel + 1);
+                $this->innerHtml .= \PHP_EOL . $element->render($indentLevel + 1);
             }
         }
 

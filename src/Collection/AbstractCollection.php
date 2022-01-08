@@ -1,12 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Palmtree\Html\Collection;
 
+/**
+ * @template TKey of array-key
+ * @template-implements \ArrayAccess<TKey, string>
+ * @template-implements \IteratorAggregate<TKey, string>
+ */
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
-    /** @var array */
+    /** @psalm-var array<TKey, string>  */
     protected $elements = [];
 
+    /**
+     * @psalm-param array<TKey, string> $elements
+     */
     final public function __construct(array $elements = [])
     {
         foreach ($elements as $key => $value) {
@@ -14,18 +24,27 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         }
     }
 
-    public function get(string $key): ?string
+    /**
+     * @psalm-param TKey $key
+     */
+    public function get($key): ?string
     {
         return $this->elements[$key] ?? null;
     }
 
-    public function set(string $key, ?string $value = ''): self
+    /**
+     * @psalm-param TKey $key
+     */
+    public function set($key, string $value = ''): self
     {
         $this->elements[$key] = $value;
 
         return $this;
     }
 
+    /**
+     * @psalm-return array<TKey, string>
+     */
     public function all(): array
     {
         return $this->elements;
@@ -63,6 +82,9 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return empty($this->elements);
     }
 
+    /**
+     * @psalm-return \ArrayIterator<TKey, string>
+     */
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
@@ -73,6 +95,9 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return $this->has($offset);
     }
 
+    /**
+     * @psalm-param TKey $offset
+     */
     public function offsetGet($offset): ?string
     {
         return $this->get($offset);
@@ -80,6 +105,9 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
 
     abstract public function offsetSet($offset, $value): void;
 
+    /**
+     * @psalm-param TKey $offset
+     */
     public function offsetUnset($offset): void
     {
         $this->remove($offset);

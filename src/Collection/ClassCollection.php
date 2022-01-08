@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Palmtree\Html\Collection;
 
+/**
+ * @template-extends AbstractCollection<string>
+ */
 class ClassCollection extends AbstractCollection
 {
     public function add(string ...$classes): self
     {
         foreach ($classes as $class) {
-            $this->set($class, $class);
+            $this->elements[$class] = $class;
         }
 
         return $this;
@@ -15,7 +20,7 @@ class ClassCollection extends AbstractCollection
 
     public function offsetSet($offset, $value): void
     {
-        $this->set($value, $value);
+        $this->elements[$value] = $value;
     }
 
     public function __toString(): string

@@ -1,16 +1,12 @@
 # :palm_tree: Palmtree Html
 
-[![License](http://img.shields.io/packagist/l/palmtree/html.svg)](LICENSE)
-[![Build Status](https://scrutinizer-ci.com/g/palmtreephp/html/badges/build.png?b=master)](https://scrutinizer-ci.com/g/palmtreephp/html/build-status/master)
-[![Scrutinizer](https://img.shields.io/scrutinizer/g/palmtreephp/html.svg)](https://scrutinizer-ci.com/g/palmtreephp/html/)
-[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/palmtreephp/html.svg)](https://scrutinizer-ci.com/g/palmtreephp/html/)
+[![License](http://img.shields.io/packagist/l/palmtree/form.svg)](LICENSE)
+[![Build](https://img.shields.io/github/workflow/status/palmtreephp/html/Build.svg)](https://github.com/palmtreephp/html/actions/workflows/build.yml)
 
 Build and render HTML elements using an OOP style interface and jQuery style selectors.
 
 ## Requirements
 * PHP >= 7.1
-
-For PHP 5.6 support use [v1.0](https://github.com/palmtreephp/html/tree/1.0)
 
 ## Installation
 
@@ -53,7 +49,7 @@ foreach ($menuItems as $item) {
 }
 
 
-$menu->attributes->setData('item_total', count($menuItems));
+$menu->attributes->setData('item_total', (string)count($menuItems));
 
 echo $menu->render();
 

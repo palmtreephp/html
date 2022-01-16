@@ -9,7 +9,16 @@ namespace Palmtree\Html\Collection;
  */
 class AttributeCollection extends \ArrayObject
 {
-    public function set(string $key, ?string $value): self
+    public function add(array $elements): self
+    {
+        foreach ($elements as $key => $value) {
+            $this->set($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function set(string $key, ?string $value = null): self
     {
         $this[$key] = $value ?? '';
 
@@ -35,7 +44,12 @@ class AttributeCollection extends \ArrayObject
      */
     public function values(): array
     {
-        return array_values($this->getArrayCopy());
+        return array_values((array)$this);
+    }
+
+    public function clear(): void
+    {
+        $this->exchangeArray([]);
     }
 
     public function __toString(): string

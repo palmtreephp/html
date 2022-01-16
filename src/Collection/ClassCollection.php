@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Palmtree\Html\Collection;
 
 /**
- * @template-extends \ArrayObject<int, string>
+ * @template-extends \ArrayObject<int|null, string>
  */
 class ClassCollection extends \ArrayObject
 {
@@ -15,7 +15,6 @@ class ClassCollection extends \ArrayObject
     public function add(...$elements): self
     {
         foreach ($elements as $value) {
-            /** @psalm-suppress NullArgument */
             $this[] = $value;
         }
 
@@ -27,7 +26,30 @@ class ClassCollection extends \ArrayObject
      */
     public function values(): array
     {
-        return array_values($this->getArrayCopy());
+        return array_values((array)$this);
+    }
+
+    public function clear(): void
+    {
+        $this->exchangeArray([]);
+    }
+
+    public function contains(string $value): bool
+    {
+        return \in_array($value, (array)$this, true);
+    }
+
+    public function remove(string $value): bool
+    {
+        $key = array_search($value, (array)$this, true);
+
+        if ($key !== false) {
+            unset($this[$key]);
+
+            return true;
+        }
+
+        return false;
     }
 
     public function __toString(): string
@@ -36,6 +58,6 @@ class ClassCollection extends \ArrayObject
             return '';
         }
 
-        return ' class="' . implode(' ', $this->getArrayCopy()) . '"';
+        return ' class="' . implode(' ', $this->values()) . '"';
     }
 }

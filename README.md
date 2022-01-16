@@ -50,6 +50,7 @@ foreach ($menuItems as $item) {
 
 
 $menu->attributes->setData('item_total', (string)count($menuItems));
+$menu->attributes['aria-label'] = 'Navigation'
 
 echo $menu->render();
 
@@ -59,7 +60,7 @@ echo $menu->render();
 Renders the following HTML:
 
 ```html
-<ul class="some-class" data-item_total="3">
+<ul class="some-class" data-item_total="3" aria-label="Navigation">
     <li class="item item-home">
         <a href="https://example.org">Home</a>
     </li>

@@ -5,35 +5,37 @@ declare(strict_types=1);
 namespace Palmtree\Html\Collection;
 
 /**
- * @template-extends AbstractCollection<string>
+ * @template-extends \ArrayObject<int, string>
  */
-class ClassCollection extends AbstractCollection
+class ClassCollection extends \ArrayObject
 {
-    public function add(string ...$classes): self
+    /**
+     * @param string ...$elements
+     */
+    public function add(...$elements): self
     {
-        foreach ($classes as $class) {
-            $this->elements[$class] = $class;
+        foreach ($elements as $value) {
+            /** @psalm-suppress NullArgument */
+            $this[] = $value;
         }
 
         return $this;
     }
 
     /**
-     * @param null   $offset
-     * @param string $value
-     * @psalm-suppress MoreSpecificImplementedParamType
+     * @return list<string>
      */
-    public function offsetSet($offset, $value): void
+    public function values(): array
     {
-        $this->elements[$value] = $value;
+        return array_values($this->getArrayCopy());
     }
 
     public function __toString(): string
     {
-        if ($this->isEmpty()) {
+        if ($this->count() === 0) {
             return '';
         }
 
-        return ' class="' . implode(' ', $this->elements) . '"';
+        return ' class="' . implode(' ', $this->getArrayCopy()) . '"';
     }
 }

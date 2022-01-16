@@ -68,7 +68,7 @@ class Element
                 $this->attributes->set('id', $id);
             }
 
-            $this->classes->add(...$selector->classes->values()->all());
+            $this->classes->add(...$selector->classes->values());
         }
     }
 

@@ -61,7 +61,7 @@ class Selector
                 } elseif ($parts[0] === 'class') {
                     $this->classes->add(...explode(' ', $parts[1]));
                 } else {
-                    $this->attributes->set($parts[0], $parts[1] ?? '');
+                    $this->attributes[$parts[0]] = $parts[1] ?? '';
                 }
             }
         }

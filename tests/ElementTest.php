@@ -17,8 +17,8 @@ class ElementTest extends TestCase
     public function testTabSize()
     {
         $element = Element::create('div')
-                          ->addChild(Element::create('span'))
-                          ->setTabSize(2);
+            ->addChild(Element::create('span'))
+            ->setTabSize(2);
 
         $this->assertSame("<div>\n  <span></span>\n</div>", $element->render());
     }
@@ -26,8 +26,8 @@ class ElementTest extends TestCase
     public function testUseTab()
     {
         $element = Element::create('div')
-                          ->addChild(Element::create('span'))
-                          ->setUseTab(true);
+            ->addChild(Element::create('span'))
+            ->setUseTab(true);
 
         $this->assertSame("<div>\n\t<span></span>\n</div>", $element->render());
     }
@@ -37,17 +37,19 @@ class ElementTest extends TestCase
         $element = Element::create('div');
         $element->classes->add('foo', 'bar');
 
-        $this->assertTrue($element->classes->has('foo'));
-        $this->assertTrue($element->classes->has('bar'));
+        $this->assertContains('foo', $element->classes);
+        $this->assertContains('bar', $element->classes);
     }
 
     public function testAttributes()
     {
         $element = Element::create('input#foo.bar.baz');
 
-        $element->attributes->setData('foo', 'bar')
-                            ->set('type', 'checkbox')
-                            ->set('checked', true);
+        $element->attributes
+            ->setData('foo', 'bar')
+            ->set('type', 'checkbox')
+            ->set('checked', true)
+        ;
 
         $document = new \DOMDocument();
         $document->loadHTML($element->render());

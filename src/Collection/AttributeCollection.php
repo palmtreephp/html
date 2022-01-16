@@ -5,50 +5,47 @@ declare(strict_types=1);
 namespace Palmtree\Html\Collection;
 
 /**
- * @template-extends AbstractCollection<string>
+ * @template-extends \ArrayObject<string, string>
  */
-final class AttributeCollection extends AbstractCollection
+class AttributeCollection extends \ArrayObject
 {
-    public function add(array $elements): self
+    public function set(string $key, ?string $value): self
     {
-        foreach ($elements as $key => $value) {
-            $this->set($key, $value);
-        }
+        $this[$key] = $value ?? '';
 
         return $this;
     }
 
     public function setData(string $key, string $value = ''): self
     {
-        $this->set("data-$key", $value);
+        $this["data-$key"] = $value;
 
         return $this;
     }
 
     public function removeData(string $key): self
     {
-        $this->remove("data-$key");
+        unset($this["data-$key"]);
 
         return $this;
     }
 
     /**
-     * @param string $offset
-     * @param string $value
+     * @return list<string>
      */
-    public function offsetSet($offset, $value): void
+    public function values(): array
     {
-        $this->set($offset, $value);
+        return array_values($this->getArrayCopy());
     }
 
     public function __toString(): string
     {
-        if ($this->isEmpty()) {
+        if ($this->count() === 0) {
             return '';
         }
 
         $attributeStrings = [];
-        foreach ($this->elements as $key => $value) {
+        foreach ($this as $key => $value) {
             $attributeString = $key;
             if ($value !== '') {
                 $attributeString .= '="' . $value . '"';

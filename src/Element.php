@@ -77,7 +77,7 @@ class Element
         return new self($selector);
     }
 
-    public function render(int $indentLevel = 0): string
+    public function renderStart(int $indentLevel = 0): string
     {
         $indent = $this->getIndent($indentLevel);
 
@@ -85,13 +85,29 @@ class Element
         $html .= $this->classes;
         $html .= $this->attributes;
 
+        $html .= '>';
+
+        return $html;
+    }
+
+    public function renderEnd(): string
+    {
+        return "</$this->tag>";
+    }
+
+    public function render(int $indentLevel = 0): string
+    {
+        $indent = $this->getIndent($indentLevel);
+
+        $html = $this->renderStart($indentLevel);
+
+        $html .= $this->innerText;
+
         if (\in_array($this->tag, self::$voidElements, true)) {
-            $html .= ">$this->innerText" . \PHP_EOL;
+            $html .= \PHP_EOL;
 
             return $html;
         }
-
-        $html .= ">$this->innerText";
 
         $innerHtml = $this->getInnerHtml($indentLevel);
 
@@ -101,7 +117,7 @@ class Element
             $html .= \PHP_EOL . $indent;
         }
 
-        $html .= "</$this->tag>";
+        $html .= $this->renderEnd();
 
         return $html;
     }

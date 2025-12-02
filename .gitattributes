@@ -5,5 +5,4 @@
 /.gitignore                export-ignore
 /.php-cs-fixer.dist.php    export-ignore
 /phpunit.xml.dist          export-ignore
-/psalm.xml                 export-ignore
-/composer.lock             export-ignore
+/phpstan.dist.neon         export-ignore

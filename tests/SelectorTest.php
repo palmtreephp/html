@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Palmtree\Html\Test;
 
 use Palmtree\Html\Exception\BadSelectorException;
@@ -8,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class SelectorTest extends TestCase
 {
-    public function testTagIdAndClasses()
+    public function testTagIdAndClasses(): void
     {
         $selector = new Selector('div#foo.bar.baz');
 
@@ -17,7 +19,7 @@ class SelectorTest extends TestCase
         $this->assertSame(['bar', 'baz'], $selector->classes->values());
     }
 
-    public function testAttribute()
+    public function testAttribute(): void
     {
         $selector = new Selector('input[type=checkbox][checked]');
 
@@ -25,7 +27,7 @@ class SelectorTest extends TestCase
         $this->assertArrayHasKey('checked', $selector->attributes);
     }
 
-    public function testHrefAttribute()
+    public function testHrefAttribute(): void
     {
         $selector = new Selector('a[href=https://example.org][id="foo"]');
 
@@ -33,14 +35,14 @@ class SelectorTest extends TestCase
         $this->assertSame('foo', $selector->getId());
     }
 
-    public function testClassesViaAttributeAndSelector()
+    public function testClassesViaAttributeAndSelector(): void
     {
         $selector = new Selector('div[class="foo bar"].baz');
 
         $this->assertSame(['foo', 'bar', 'baz'], $selector->classes->values());
     }
 
-    public function testBadSelector()
+    public function testBadSelector(): void
     {
         $this->expectException(BadSelectorException::class);
 

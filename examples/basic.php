@@ -27,7 +27,7 @@ $menuItems[] = [
 
 foreach ($menuItems as $item) {
     $li = Element::create('li.item')->addChild(
-        Element::create('a[href="' . $item['href'] . '"]')->setInnerText($item['label'])
+        Element::create('a[href="' . $item['href'] . '"]')->setInnerText($item['label']),
     );
 
     $li->classes[] = 'item-' . strtolower($item['label']);

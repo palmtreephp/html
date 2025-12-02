@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Palmtree\Html\Collection;
 
 /**
- * @template-extends \ArrayObject<int|null, string>
+ * @extends \ArrayObject<int, string>
  */
-class ClassCollection extends \ArrayObject
+class ClassCollection extends \ArrayObject implements \Stringable
 {
     /**
      * @param string ...$elements

@@ -10,13 +10,14 @@
         }
     ],
     "require": {
-        "php": ">=7.1"
+        "php": ">=8.3"
     },
     "require-dev": {
         "ext-dom": "*",
         "palmtree/php-cs-fixer-config": "^2.0",
-        "phpunit/phpunit": "^9.0",
-        "vimeo/psalm": "^4.18"
+        "phpunit/phpunit": "^12.4",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -29,9 +30,8 @@
         }
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit -v",
-        "fix": "vendor/bin/php-cs-fixer fix --diff",
-        "psalm": "vendor/bin/psalm --no-cache",
-        "lint": "find -L src -type f -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+        "test": "@php vendor/bin/phpunit",
+        "fix": "@php vendor/bin/php-cs-fixer fix --diff",
+        "sa": "@php vendor/bin/phpstan analyse"
     }
 }

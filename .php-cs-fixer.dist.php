@@ -10,6 +10,7 @@ $config
     ->getFinder()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/examples')
+    ->in(__DIR__ . '/tests')
     ->append([__FILE__])
 ;
 

@@ -10,20 +10,16 @@ use Palmtree\Html\Exception\BadSelectorException;
 
 class Selector
 {
-    /** @var string */
-    private $tag;
-    /** @var string */
-    private $id;
-    /** @var ClassCollection */
-    public $classes;
-    /** @var AttributeCollection */
-    public $attributes;
+    private const string PATTERN = '/([a-zA-Z]+)*((?:\[[^\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
+    private const int TAG_MATCHES = 1;
+    private const int ATTRIBUTE_MATCHES = 2;
+    private const int ID_MATCHES = 3;
+    private const int CLASS_MATCHES = 4;
 
-    private const PATTERN = '/([a-zA-Z]+)*((?:\[[^\]]+\])*)(#[^#\.]+)*((?:\.[^.#]+)*)/';
-    private const TAG_MATCHES = 1;
-    private const ATTRIBUTE_MATCHES = 2;
-    private const ID_MATCHES = 3;
-    private const CLASS_MATCHES = 4;
+    private string $tag;
+    private ?string $id = null;
+    public ClassCollection $classes;
+    public AttributeCollection $attributes;
 
     public function __construct(string $selector)
     {
@@ -34,7 +30,7 @@ class Selector
 
     private function parse(string $selector): void
     {
-        if (strpos($selector, '[') === false && strpos($selector, '#') === false && strpos($selector, '.') === false) {
+        if (!str_contains($selector, '[') && !str_contains($selector, '#') && !str_contains($selector, '.')) {
             $this->tag = $selector;
 
             return;

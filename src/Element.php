@@ -9,8 +9,8 @@ use Palmtree\Html\Collection\ClassCollection;
 
 class Element
 {
-    /** @var array */
-    public static $voidElements = [
+    /** @var list<string> */
+    public static array $voidElements = [
         'area',
         'base',
         'br',
@@ -28,27 +28,20 @@ class Element
         'wbr',
     ];
 
-    /** @var array */
-    public static $singleLineElements = [
+    /** @var list<string> */
+    public static array $singleLineElements = [
         'textarea',
     ];
 
-    /** @var AttributeCollection */
-    public $attributes;
-    /** @var ClassCollection */
-    public $classes;
-    /** @var string */
-    private $tag;
-    /** @var string */
-    private $innerText = '';
-    /** @var string|null */
-    private $innerHtml;
-    /** @var Element[] */
-    private $children = [];
-    /** @var int */
-    private $tabSize = 4;
-    /** @var bool */
-    private $useTab = false;
+    public AttributeCollection $attributes;
+    public ClassCollection $classes;
+    private string $tag;
+    private string $innerText = '';
+    private ?string $innerHtml = null;
+    /** @var list<Element> */
+    private array $children = [];
+    private int $tabSize = 4;
+    private bool $useTab = false;
 
     public function __construct(?string $selectorString = null)
     {

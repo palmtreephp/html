@@ -7,8 +7,11 @@ namespace Palmtree\Html\Collection;
 /**
  * @template-extends \ArrayObject<string, string>
  */
-class AttributeCollection extends \ArrayObject
+class AttributeCollection extends \ArrayObject implements \Stringable
 {
+    /**
+     * @param array<string, string|null> $elements
+     */
     public function add(array $elements): self
     {
         foreach ($elements as $key => $value) {

@@ -13,6 +13,8 @@ class ClassCollection extends \ArrayObject implements \Stringable
 {
     /**
      * @param string ...$elements
+     *
+     * @phpstan-impure
      */
     public function add(...$elements): self
     {
@@ -41,6 +43,7 @@ class ClassCollection extends \ArrayObject implements \Stringable
         return \in_array($value, (array)$this, true);
     }
 
+    /** @phpstan-impure */
     public function remove(string $value): bool
     {
         $key = array_search($value, (array)$this, true);

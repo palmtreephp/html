@@ -13,6 +13,8 @@ class AttributeCollection extends \ArrayObject implements \Stringable
 {
     /**
      * @param array<string, string|null> $elements
+     *
+     * @phpstan-impure
      */
     public function add(array $elements): self
     {
@@ -23,6 +25,7 @@ class AttributeCollection extends \ArrayObject implements \Stringable
         return $this;
     }
 
+    /** @phpstan-impure */
     public function set(string $key, ?string $value = null): self
     {
         $this[$key] = $value ?? '';
@@ -30,6 +33,7 @@ class AttributeCollection extends \ArrayObject implements \Stringable
         return $this;
     }
 
+    /** @phpstan-impure */
     public function setData(string $key, string $value = ''): self
     {
         $this["data-$key"] = $value;
@@ -37,6 +41,7 @@ class AttributeCollection extends \ArrayObject implements \Stringable
         return $this;
     }
 
+    /** @phpstan-impure */
     public function removeData(string $key): self
     {
         unset($this["data-$key"]);

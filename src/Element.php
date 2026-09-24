@@ -37,7 +37,7 @@ class Element
     public ClassCollection $classes;
     private string $tag;
     private string $innerText = '';
-    private ?string $innerHtml = null;
+    private string $innerHtml = '';
     /** @var list<Element> */
     private array $children = [];
     private int $tabSize = 4;
@@ -94,19 +94,15 @@ class Element
 
         $html = $this->renderStart($indentLevel);
 
-        $html .= $this->innerText;
-
         if (\in_array($this->tag, self::$voidElements, true)) {
             $html .= \PHP_EOL;
 
             return $html;
         }
 
-        $innerHtml = $this->getInnerHtml($indentLevel);
+        $html .= $this->getInnerHtml($indentLevel);
 
-        $html .= $innerHtml;
-
-        if (!empty($innerHtml) && empty($this->innerText) && !\in_array($this->tag, self::$singleLineElements, true)) {
+        if ($this->children && $this->innerText === '' && $this->innerHtml === '' && !\in_array($this->tag, self::$singleLineElements, true)) {
             $html .= \PHP_EOL . $indent;
         }
 
@@ -115,8 +111,13 @@ class Element
         return $html;
     }
 
+    /**
+     * @throws \InvalidArgumentException If the tag name is not a valid HTML tag name.
+     */
     public function setTag(string $tag): self
     {
+        Escaper::assertValidTagName($tag);
+
         $this->tag = $tag;
 
         return $this;
@@ -127,6 +128,9 @@ class Element
         return $this->tag;
     }
 
+    /**
+     * Sets the element's text content. It is HTML-escaped when rendered.
+     */
     public function setInnerText(string $innerText): self
     {
         $this->innerText = $innerText;
@@ -148,16 +152,29 @@ class Element
         return $this;
     }
 
+    /**
+     * Sets raw HTML content, rendered after the inner text and before any children. It is NOT escaped,
+     * so it must never contain untrusted input.
+     */
+    public function setInnerHtml(string $innerHtml): self
+    {
+        $this->innerHtml = $innerHtml;
+
+        return $this;
+    }
+
+    /**
+     * Returns the rendered content of the element: its escaped inner text, raw inner HTML and rendered children.
+     */
     public function getInnerHtml(int $indentLevel = 0): string
     {
-        if ($this->innerHtml === null) {
-            $this->innerHtml = '';
-            foreach ($this->children as $element) {
-                $this->innerHtml .= \PHP_EOL . $element->render($indentLevel + 1);
-            }
+        $html = Escaper::escape($this->innerText) . $this->innerHtml;
+
+        foreach ($this->children as $element) {
+            $html .= \PHP_EOL . $element->render($indentLevel + 1);
         }
 
-        return $this->innerHtml;
+        return $html;
     }
 
     public function setTabSize(int $tabSize): self

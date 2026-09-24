@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Palmtree\Html\Collection;
 
+use Palmtree\Html\Escaper;
+
 /**
  * @template-extends \ArrayObject<string, string>
  */
@@ -11,6 +13,8 @@ class AttributeCollection extends \ArrayObject implements \Stringable
 {
     /**
      * @param array<string, string|null> $elements
+     *
+     * @phpstan-impure
      */
     public function add(array $elements): self
     {
@@ -21,6 +25,7 @@ class AttributeCollection extends \ArrayObject implements \Stringable
         return $this;
     }
 
+    /** @phpstan-impure */
     public function set(string $key, ?string $value = null): self
     {
         $this[$key] = $value ?? '';
@@ -28,6 +33,7 @@ class AttributeCollection extends \ArrayObject implements \Stringable
         return $this;
     }
 
+    /** @phpstan-impure */
     public function setData(string $key, string $value = ''): self
     {
         $this["data-$key"] = $value;
@@ -35,6 +41,7 @@ class AttributeCollection extends \ArrayObject implements \Stringable
         return $this;
     }
 
+    /** @phpstan-impure */
     public function removeData(string $key): self
     {
         unset($this["data-$key"]);
@@ -63,9 +70,14 @@ class AttributeCollection extends \ArrayObject implements \Stringable
 
         $attributeStrings = [];
         foreach ($this as $key => $value) {
+            $key = (string)$key;
+            $value = (string)$value;
+
+            Escaper::assertValidAttributeName($key);
+
             $attributeString = $key;
             if ($value !== '') {
-                $attributeString .= '="' . $value . '"';
+                $attributeString .= '="' . Escaper::escape($value) . '"';
             }
 
             $attributeStrings[] = $attributeString;

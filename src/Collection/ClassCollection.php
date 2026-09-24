@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Palmtree\Html\Collection;
 
+use Palmtree\Html\Escaper;
+
 /**
  * @extends \ArrayObject<int, string>
  */
@@ -11,6 +13,8 @@ class ClassCollection extends \ArrayObject implements \Stringable
 {
     /**
      * @param string ...$elements
+     *
+     * @phpstan-impure
      */
     public function add(...$elements): self
     {
@@ -39,6 +43,7 @@ class ClassCollection extends \ArrayObject implements \Stringable
         return \in_array($value, (array)$this, true);
     }
 
+    /** @phpstan-impure */
     public function remove(string $value): bool
     {
         $key = array_search($value, (array)$this, true);
@@ -58,6 +63,6 @@ class ClassCollection extends \ArrayObject implements \Stringable
             return '';
         }
 
-        return ' class="' . implode(' ', $this->values()) . '"';
+        return ' class="' . Escaper::escape(implode(' ', $this->values())) . '"';
     }
 }

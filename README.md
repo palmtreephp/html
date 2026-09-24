@@ -73,6 +73,23 @@ Renders the following HTML:
 </ul>
 ```
 
+## Escaping
+
+Inner text, attribute values and class names are HTML-escaped when rendered, so untrusted input can be passed
+to `setInnerText()` and `attributes` safely:
+
+```php
+$input = new Element('input');
+$input->attributes['value'] = '"><script>alert(1)</script>';
+
+echo $input->render(); // <input value="&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;">
+```
+
+Use `setInnerHtml()` to add raw HTML. It is **not** escaped, so never pass untrusted input to it.
+
+Tag and attribute names are validated rather than escaped: an `\InvalidArgumentException` is thrown for a name
+that is not valid HTML.
+
 ## License
 
 Released under the [MIT license](LICENSE)

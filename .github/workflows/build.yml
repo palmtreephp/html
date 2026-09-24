@@ -1,48 +1,51 @@
 name: Build
 
-on: push
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   run:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-24.04'
     strategy:
       matrix:
-        php-versions: [ '7.1', '7.2', '7.3', '7.4', '8.0', '8.1' ]
+        php-versions: [ '8.3', '8.4', '8.5' ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+          tools: cs2pr
 
       - name: Declare variables
         id: vars
-        run: |
-          echo ::set-output name=composer_cache_dir::$(composer config cache-dir)
+        run: echo "composer_cache_dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache composer downloads
-        uses: actions/cache@v1
+      - name: Cache composer
+        uses: actions/cache@v4
         with:
           path: ${{ steps.vars.outputs.composer_cache_dir }}
-          key: composer
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Lint PHP
-        run: find -L src -type f -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+        run: find -L src -type f -name '*.php' -print0 | xargs -0 -n 1 -P $(nproc) php -l
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-ansi
-        if: matrix.php-versions == 8.0
+        run: composer update --no-interaction
 
-      - name: PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --diff
-        if: matrix.php-versions == 8.0
+      - name: Validate coding standards
+        if: matrix.php-versions == '8.3'
+        run: php vendor/bin/php-cs-fixer fix -vvv --dry-run --using-cache=no --format=checkstyle | cs2pr
 
-      - name: Psalm
-        run: ./vendor/bin/psalm --config=psalm.xml --no-cache
-        if: matrix.php-versions == 8.0
+      - name: Static Analysis
+        run: php vendor/bin/phpstan analyse --error-format=github
 
-      - name: PHPUnit
-        run: ./vendor/bin/phpunit -v
-        if: matrix.php-versions == 8.0
+      - name: Tests
+        run: php vendor/bin/phpunit --do-not-cache-result

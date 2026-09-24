@@ -83,8 +83,8 @@ class AttributeCollectionTest extends TestCase
     public function testRemoveDataNonExistent(): void
     {
         $collection = new AttributeCollection();
-        $collection->removeData('non-existent');
 
+        $this->assertSame($collection, $collection->removeData('non-existent'));
         $this->assertFalse(isset($collection['data-non-existent']));
     }
 

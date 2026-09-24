@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Palmtree\Html\Collection;
 
+use Palmtree\Html\Escaper;
+
 /**
  * @template-extends \ArrayObject<string, string>
  */
@@ -63,9 +65,14 @@ class AttributeCollection extends \ArrayObject implements \Stringable
 
         $attributeStrings = [];
         foreach ($this as $key => $value) {
+            $key = (string)$key;
+            $value = (string)$value;
+
+            Escaper::assertValidAttributeName($key);
+
             $attributeString = $key;
             if ($value !== '') {
-                $attributeString .= '="' . $value . '"';
+                $attributeString .= '="' . Escaper::escape($value) . '"';
             }
 
             $attributeStrings[] = $attributeString;

@@ -208,4 +208,45 @@ class AttributeCollectionTest extends TestCase
         $this->assertSame('test-id', $items['id']);
         $this->assertSame('My Title', $items['title']);
     }
+
+    public function testToStringEscapesValues(): void
+    {
+        $collection = new AttributeCollection();
+        $collection->set('title', '"quoted" & \'single\' <tag>');
+
+        $this->assertSame(' title="&quot;quoted&quot; &amp; &apos;single&apos; &lt;tag&gt;"', (string)$collection);
+    }
+
+    public function testToStringCastsNonStringValues(): void
+    {
+        $collection = new AttributeCollection();
+        $collection['value'] = 5; // @phpstan-ignore offsetAssign.valueType
+
+        $this->assertSame(' value="5"', (string)$collection);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function invalidAttributeNameProvider(): iterable
+    {
+        yield 'space' => ['foo onclick'];
+        yield 'double quote' => ['foo"'];
+        yield 'single quote' => ["foo'"];
+        yield 'greater than' => ['foo>'];
+        yield 'slash' => ['foo/'];
+        yield 'equals' => ['foo=bar'];
+        yield 'empty' => [''];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidAttributeNameProvider')]
+    public function testToStringThrowsOnInvalidAttributeName(string $name): void
+    {
+        $collection = new AttributeCollection();
+        $collection[$name] = 'x';
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        (string)$collection;
+    }
 }

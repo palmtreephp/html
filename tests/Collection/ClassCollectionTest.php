@@ -232,4 +232,12 @@ class ClassCollectionTest extends TestCase
         // ArrayObject allows duplicates, so we should have 2 entries
         $this->assertCount(2, $collection);
     }
+
+    public function testToStringEscapesValues(): void
+    {
+        $collection = new ClassCollection();
+        $collection->add('foo"', '<bar>');
+
+        $this->assertSame(' class="foo&quot; &lt;bar&gt;"', (string)$collection);
+    }
 }

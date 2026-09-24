@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Palmtree\Html\Collection;
 
+use Palmtree\Html\Escaper;
+
 /**
  * @extends \ArrayObject<int, string>
  */
@@ -58,6 +60,6 @@ class ClassCollection extends \ArrayObject implements \Stringable
             return '';
         }
 
-        return ' class="' . implode(' ', $this->values()) . '"';
+        return ' class="' . Escaper::escape(implode(' ', $this->values())) . '"';
     }
 }
